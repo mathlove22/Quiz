@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import json
+import re
 import google.generativeai as genai
 
 # questions.json에서 문제 데이터 로드
@@ -28,7 +29,8 @@ def build_expected_json_output():
     criteria.json에 있는 모든 기준을 동적으로 JSON 출력 예시 형태로 생성합니다.
     """
     keys = list(criteria_data.keys())
-    expected = "{" + ", ".join([f'"{key}": 점수' for key in keys]) + "}"
+    # 테스트 예시로, 모든 기준에 대해 기본값 0을 넣어 valid JSON 형태로 만듭니다.
+    expected = "{" + ", ".join([f'"{key}": 0' for key in keys]) + "}"
     return expected
 
 def grade_answer_with_api(answer):
@@ -82,7 +84,14 @@ def grade_answer_with_api(answer):
     st.write("API 응답:", response.text)
 
     try:
-        result = json.loads(response.text)
+        # 응답 텍스트에서 순수 JSON 부분만 추출합니다.
+        json_match = re.search(r'({.*})', response.text, re.DOTALL)
+        if json_match:
+            pure_json = json_match.group(1)
+            result = json.loads(pure_json)
+        else:
+            st.error("적절한 JSON 형태를 찾지 못했습니다.")
+            result = None
     except Exception as e:
         st.error("응답 파싱 실패: " + str(e))
         result = None
