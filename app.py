@@ -16,7 +16,7 @@ def grade_answer_with_api(answer):
     
     # TODO: 실제 API 키 또는 인증 토큰을 입력하세요.
     headers = {
-        "Authorization": "Bearer YOUR_API_KEY",  # API 키 또는 인증 토큰
+        "Authorization": "AIzaSyBky_Z7l-D3w9gzLUqNLvgoBoYtQb_eYhY",  # API 키 또는 인증 토큰
         "Content-Type": "application/json"
     }
     
